@@ -49,3 +49,44 @@ python ./ec-su_axb35-linux-gui.py
 to install:
 sudo install -m 755 ec-su_axb35-linux-gui.py /usr/local/bin/ec-su_axb35-linux-gui
 cp ec-fan-control.desktop ~/.local/share/applications/
+
+
+# 自定义开发补充说明
+
+## 风扇曲线
+```
+# Fan 1
+echo "45,53,60,66,70" | sudo tee /sys/class/ec_su_axb35/fan1/rampup_curve
+echo "40,48,55,61,65" | sudo tee /sys/class/ec_su_axb35/fan1/rampdown_curve
+echo "curve" | sudo tee /sys/class/ec_su_axb35/fan1/mode
+
+# Fan 2
+echo "45,53,60,66,70" | sudo tee /sys/class/ec_su_axb35/fan2/rampup_curve
+echo "40,48,55,61,65" | sudo tee /sys/class/ec_su_axb35/fan2/rampdown_curve
+echo "curve" | sudo tee /sys/class/ec_su_axb35/fan2/mode
+```
+
+## 开机服务
+```
+sudo vim /etc/systemd/system/fan-curve.service
+
+[Unit]
+Description=Set Strix Halo fan curves
+After=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do [ -e /sys/class/ec_su_axb35/fan1 ] && exit 0; sleep 1; done; exit 1'
+
+ExecStart=/bin/sh -c 'echo "45,53,60,66,70" > /sys/class/ec_su_axb35/fan1/rampup_curve'
+ExecStart=/bin/sh -c 'echo "40,48,55,61,65" > /sys/class/ec_su_axb35/fan1/rampdown_curve'
+ExecStart=/bin/sh -c 'echo "curve" > /sys/class/ec_su_axb35/fan1/mode'
+
+ExecStart=/bin/sh -c 'echo "45,53,60,66,70" > /sys/class/ec_su_axb35/fan2/rampup_curve'
+ExecStart=/bin/sh -c 'echo "40,48,55,61,65" > /sys/class/ec_su_axb35/fan2/rampdown_curve'
+ExecStart=/bin/sh -c 'echo "curve" > /sys/class/ec_su_axb35/fan2/mode'
+
+[Install]
+WantedBy=multi-user.target
+```
