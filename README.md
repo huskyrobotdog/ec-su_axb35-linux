@@ -68,7 +68,14 @@ echo "curve" | sudo tee /sys/class/ec_su_axb35/fan2/mode
 
 ## 开机服务
 ```
-sudo vim /etc/systemd/system/fan-curve.service
+cd ec-su_axb35-linux
+sudo make install
+sudo modprobe ec_su_axb35
+dmesg | grep 'Sixunited AXB35-02 EC driver loaded'
+
+---
+
+sudo vim /etc/systemd/system/fancontrol.service
 
 [Unit]
 Description=Set Strix Halo fan curves
@@ -77,7 +84,6 @@ After=multi-user.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do [ -e /sys/class/ec_su_axb35/fan1 ] && exit 0; sleep 1; done; exit 1'
 
 ExecStart=/bin/sh -c 'echo "45,53,60,66,70" > /sys/class/ec_su_axb35/fan1/rampup_curve'
 ExecStart=/bin/sh -c 'echo "40,48,55,61,65" > /sys/class/ec_su_axb35/fan1/rampdown_curve'
@@ -89,4 +95,9 @@ ExecStart=/bin/sh -c 'echo "curve" > /sys/class/ec_su_axb35/fan2/mode'
 
 [Install]
 WantedBy=multi-user.target
+
+---
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now fancontrol.service
 ```
