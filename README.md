@@ -101,3 +101,9 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 sudo systemctl enable --now fancontrol.service
 ```
+
+## 内核设置
+```
+sudo vim /etc/default/grub
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dcdebugmask=0x1000 amdgpu.cwsr_enable=0 amd_iommu=off"
+```
