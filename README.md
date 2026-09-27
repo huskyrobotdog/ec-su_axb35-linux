@@ -106,4 +106,5 @@ sudo systemctl enable --now fancontrol.service
 ```
 sudo vim /etc/default/grub
 GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dcdebugmask=0x1000 amdgpu.cwsr_enable=0 amd_iommu=off"
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dc=0 amdgpu.cwsr_enable=0 amd_iommu=off"
 ```
