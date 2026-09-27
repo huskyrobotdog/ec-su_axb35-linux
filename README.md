@@ -73,6 +73,8 @@ sudo make install
 sudo modprobe ec_su_axb35
 dmesg | grep 'Sixunited AXB35-02 EC driver loaded'
 
+cat /etc/modules-load.d/ec_su_axb35.conf
+
 ---
 
 sudo vim /etc/systemd/system/fancontrol.service
