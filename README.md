@@ -73,6 +73,7 @@ sudo make install
 sudo modprobe ec_su_axb35
 dmesg | grep 'Sixunited AXB35-02 EC driver loaded'
 
+echo ec_su_axb35 | sudo tee /etc/modules-load.d/ec_su_axb35.conf
 cat /etc/modules-load.d/ec_su_axb35.conf
 
 ---
