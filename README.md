@@ -109,5 +109,5 @@ sudo systemctl enable --now fancontrol.service
 ```
 sudo vim /etc/default/grub
 GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dcdebugmask=0x1000 amdgpu.cwsr_enable=0 amd_iommu=off"
-GRUB_CMDLINE_LINUX_DEFAULT="ttm.pages_limit=27000000 ttm.page_pool_size=27000000 amdttm.pages_limit=27000000 amdttm.page_pool_size=27000000 apparmor=0 amd_iommu=off"
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 ttm.pages_limit=27000000 ttm.page_pool_size=27000000 amdttm.pages_limit=27000000 amdttm.page_pool_size=27000000 apparmor=0 amd_iommu=off"
 ```
