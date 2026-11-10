@@ -108,6 +108,47 @@ sudo systemctl enable --now fancontrol.service
 ## 内核设置
 ```
 sudo vim /etc/default/grub
-GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dcdebugmask=0x1000 amdgpu.cwsr_enable=0 amd_iommu=off"
+# GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 amdgpu.dcdebugmask=0x1000 amdgpu.cwsr_enable=0 amd_iommu=off"
 GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 ttm.pages_limit=27000000 ttm.page_pool_size=27000000 amdttm.pages_limit=27000000 amdttm.page_pool_size=27000000 apparmor=0 amd_iommu=off"
+```
+
+
+# 方案2
+
+```
+cd ec-su_axb35-linux
+sudo make install
+sudo modprobe ec_su_axb35
+dmesg | grep 'Sixunited AXB35-02 EC driver loaded'
+
+echo ec_su_axb35 | sudo tee /etc/modules-load.d/ec_su_axb35.conf
+cat /etc/modules-load.d/ec_su_axb35.conf
+
+---
+
+sudo vim /etc/systemd/system/fancontrol.service
+
+[Unit]
+Description=Set Strix Halo fan curves
+After=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/bin/sh -c 'echo "58,66,72,78,84" > /sys/class/ec_su_axb35/fan1/rampup_curve'
+ExecStart=/bin/sh -c 'echo "52,60,66,72,78" > /sys/class/ec_su_axb35/fan1/rampdown_curve'
+ExecStart=/bin/sh -c 'echo "curve" > /sys/class/ec_su_axb35/fan1/mode'
+
+ExecStart=/bin/sh -c 'echo "58,66,72,78,84" > /sys/class/ec_su_axb35/fan2/rampup_curve'
+ExecStart=/bin/sh -c 'echo "52,60,66,72,78" > /sys/class/ec_su_axb35/fan2/rampdown_curve'
+ExecStart=/bin/sh -c 'echo "curve" > /sys/class/ec_su_axb35/fan2/mode'
+
+[Install]
+WantedBy=multi-user.target
+
+---
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now fancontrol.service
 ```
